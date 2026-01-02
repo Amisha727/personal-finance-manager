@@ -18,11 +18,13 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDate date;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type; // INCOME or EXPENSE
+    private TransactionType type;   // ✅ ENUM ONLY
 
-    @Column(nullable = false)
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;      // ✅ ENTITY ONLY
 
     private String description;
 
@@ -30,7 +32,7 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // -------- Getters & Setters --------
+    // ---------- Getters & Setters ----------
 
     public Long getId() {
         return id;
@@ -52,19 +54,19 @@ public class Transaction {
         this.date = date;
     }
 
-    public String getType() {
+    public TransactionType getType() {   // ✅ ENUM
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TransactionType type) {
         this.type = type;
     }
 
-    public String getCategory() {
+    public Category getCategory() {       // ✅ ENTITY
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

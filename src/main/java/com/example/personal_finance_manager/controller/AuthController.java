@@ -9,6 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.personal_finance_manager.dto.LoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.Collections;
+import jakarta.servlet.http.HttpSession;
+
 
 
 @RestController
@@ -55,13 +60,29 @@ public class AuthController {
     ) {
         User user = userService.login(request.getUsername(), request.getPassword());
 
-        // create session
-        var session = httpRequest.getSession(true);
-        session.setAttribute("USER_ID", user.getId());
+        // 1️⃣ Create Authentication object
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        null,
+                        Collections.emptyList()
+                );
 
+        // 2️⃣ Set authentication in SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        // 3️⃣ Create session AND store security context
+        HttpSession session = httpRequest.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+        // 4️⃣ ALSO store user for business logic
+        session.setAttribute("user", user);
+        session.setAttribute("USER_ID", user.getId());
 
         return ResponseEntity.ok("Login successful");
     }
+
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {

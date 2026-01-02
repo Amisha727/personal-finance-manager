@@ -1,14 +1,14 @@
 package com.example.personal_finance_manager.controller;
 
+import com.example.personal_finance_manager.dto.CreateTransactionRequest;
 import com.example.personal_finance_manager.entity.Transaction;
 import com.example.personal_finance_manager.service.TransactionService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,38 +21,71 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    // ✅ CREATE
     @PostMapping
     public ResponseEntity<?> createTransaction(
-            @RequestParam BigDecimal amount,
-            @RequestParam LocalDate date,
-            @RequestParam String type,
-            @RequestParam String category,
-            @RequestParam(required = false) String description,
+            @Valid @RequestBody CreateTransactionRequest requestBody,
             HttpServletRequest request
     ) {
 
         Long userId = (Long) request.getSession(false).getAttribute("USER_ID");
 
         Transaction transaction = transactionService.createTransaction(
-                userId, amount, date, type, category, description
+                userId,
+                requestBody.getAmount(),
+                requestBody.getDate(),
+                requestBody.getType(),
+                requestBody.getCategoryId(),
+                requestBody.getDescription()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
     }
 
+    // ✅ GET ALL
     @GetMapping
     public ResponseEntity<List<Transaction>> getTransactions(HttpServletRequest request) {
 
-         var session = request.getSession(false);
-        if (session == null || session.getAttribute("USER_ID") == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Long userId = (Long) session.getAttribute("USER_ID");
-
+        Long userId = (Long) request.getSession(false).getAttribute("USER_ID");
 
         return ResponseEntity.ok(
                 transactionService.getAllTransactions(userId)
         );
+    }
+
+    // ✅ UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTransaction(
+            @PathVariable Long id,
+            @RequestBody CreateTransactionRequest requestBody,
+            HttpServletRequest request
+    ) {
+
+        Long userId = (Long) request.getSession(false).getAttribute("USER_ID");
+
+        Transaction updated = transactionService.updateTransaction(
+                id,
+                userId,
+                requestBody.getAmount(),
+                requestBody.getType(),
+                requestBody.getCategoryId(),
+                requestBody.getDescription()
+        );
+
+        return ResponseEntity.ok(updated);
+    }
+
+    // ✅ DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTransaction(
+            @PathVariable Long id,
+            HttpServletRequest request
+    ) {
+
+        Long userId = (Long) request.getSession(false).getAttribute("USER_ID");
+
+        transactionService.deleteTransaction(id, userId);
+
+        return ResponseEntity.noContent().build();
     }
 }
