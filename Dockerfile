@@ -1,26 +1,33 @@
-# ---- Build stage ----
+# ===============================
+# Build Stage
+# ===============================
 FROM eclipse-temurin:17-jdk-alpine AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and config first
+# 1️⃣ Copy Maven wrapper + config
 COPY mvnw .
 COPY .mvn .mvn
 
-# 🔥 FIX: give execute permission to mvnw
+# 2️⃣ Give execute permission
 RUN chmod +x mvnw
 
-# Download dependencies
+# 3️⃣ Copy pom.xml FIRST (IMPORTANT)
+COPY pom.xml .
+
+# 4️⃣ Download dependencies (now pom.xml exists ✅)
 RUN ./mvnw dependency:go-offline
 
-# Copy source code
-COPY pom.xml .
+# 5️⃣ Copy source code
 COPY src src
 
-# Build the application (skip tests to avoid test failures)
+# 6️⃣ Build jar (skip tests)
 RUN ./mvnw clean package -DskipTests
 
-# ---- Run stage ----
+
+# ===============================
+# Run Stage
+# ===============================
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
