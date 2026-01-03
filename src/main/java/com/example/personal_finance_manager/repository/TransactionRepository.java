@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    // Fetch all transactions of a user (newest first)
+    // Fetching all transactions of a user
     boolean existsByCategory(Category category);
 
     List<Transaction> findByUserOrderByDateDesc(User user);

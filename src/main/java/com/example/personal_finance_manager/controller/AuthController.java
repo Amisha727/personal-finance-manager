@@ -35,7 +35,7 @@ public class AuthController {
                 .body(new RegisterResponse("User registered successfully", user.getId()));
     }
 
-    // simple response class (inner class for now)
+
     static class RegisterResponse {
         private String message;
         private Long userId;
@@ -60,7 +60,7 @@ public class AuthController {
     ) {
         User user = userService.login(request.getUsername(), request.getPassword());
 
-        // 1️⃣ Create Authentication object
+        // Creating Authentication object
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
@@ -68,14 +68,14 @@ public class AuthController {
                         Collections.emptyList()
                 );
 
-        // 2️⃣ Set authentication in SecurityContext
+        // Setting authentication in SecurityContext
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        // 3️⃣ Create session AND store security context
+        // Creating session & store security context
         HttpSession session = httpRequest.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        // 4️⃣ ALSO store user for business logic
+        // store user for business logic
         session.setAttribute("user", user);
         session.setAttribute("USER_ID", user.getId());
 

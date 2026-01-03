@@ -28,7 +28,7 @@ public class TransactionService {
         this.categoryRepository = categoryRepository;
     }
 
-    // ✅ CREATE TRANSACTION
+    // CREATING TRANSACTION
     public Transaction createTransaction(
             Long userId,
             BigDecimal amount,
@@ -63,7 +63,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    // ✅ GET ALL TRANSACTIONS
+    // GETING ALL TRANSACTIONS
     public List<Transaction> getAllTransactions(Long userId) {
 
         User user = userRepository.findById(userId)
@@ -72,7 +72,7 @@ public class TransactionService {
         return transactionRepository.findByUserOrderByDateDesc(user);
     }
 
-    // ✅ UPDATE TRANSACTION (NO DATE UPDATE AS PER PDF)
+    // UPDATE TRANSACTION
     public Transaction updateTransaction(
             Long transactionId,
             Long userId,
@@ -110,7 +110,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    // ✅ DELETE TRANSACTION
+    // DELETE TRANSACTION
     public void deleteTransaction(Long transactionId, Long userId) {
 
         Transaction transaction = transactionRepository.findById(transactionId)

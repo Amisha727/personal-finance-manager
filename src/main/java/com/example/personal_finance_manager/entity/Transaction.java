@@ -20,11 +20,11 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type;   // ✅ ENUM ONLY
+    private TransactionType type;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;      // ✅ ENTITY ONLY
+    private Category category;
 
     private String description;
 

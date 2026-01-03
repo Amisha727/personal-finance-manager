@@ -37,10 +37,10 @@ public class UserService {
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        // 1️⃣ SAVE USER FIRST
+        // SAVE USER FIRST
         User savedUser = userRepository.save(user);
 
-        // 2️⃣ CREATE DEFAULT CATEGORIES (PDF requirement)
+        // CREATE DEFAULT CATEGORIES (PDF requirement)
         Category income = new Category();
         income.setName("Income");
         income.setDefault(true);
@@ -54,7 +54,7 @@ public class UserService {
         categoryRepository.save(income);
         categoryRepository.save(expense);
 
-        // 3️⃣ RETURN USER
+        // RETURN USER
         return savedUser;
     }
 

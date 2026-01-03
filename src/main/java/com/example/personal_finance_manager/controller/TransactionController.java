@@ -21,7 +21,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    // ✅ CREATE
+    // CREATE
     @PostMapping
     public ResponseEntity<?> createTransaction(
             @Valid @RequestBody CreateTransactionRequest requestBody,
@@ -42,7 +42,7 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
     }
 
-    // ✅ GET ALL
+    // GET ALL
     @GetMapping
     public ResponseEntity<List<Transaction>> getTransactions(HttpServletRequest request) {
 
@@ -53,7 +53,7 @@ public class TransactionController {
         );
     }
 
-    // ✅ UPDATE
+    // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTransaction(
             @PathVariable Long id,
@@ -75,7 +75,7 @@ public class TransactionController {
         return ResponseEntity.ok(updated);
     }
 
-    // ✅ DELETE
+    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTransaction(
             @PathVariable Long id,

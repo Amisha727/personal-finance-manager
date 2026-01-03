@@ -42,9 +42,9 @@ public class ReportService {
         for (Transaction t : transactions) {
 
             String category = t.getCategory().getName();
-            double amount = t.getAmount().doubleValue(); // ✅ FIX 1
+            double amount = t.getAmount().doubleValue();
 
-            if (t.getType() == TransactionType.INCOME) { // ✅ FIX 2
+            if (t.getType() == TransactionType.INCOME) {
                 incomeMap.put(category,
                         incomeMap.getOrDefault(category, 0.0) + amount);
                 totalIncome += amount;
