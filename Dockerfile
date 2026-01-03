@@ -1,24 +1,32 @@
-# Step 1: Use official Java 17 runtime
-FROM eclipse-temurin:17-jdk-alpine
+# ---- Build stage ----
+FROM eclipse-temurin:17-jdk-alpine AS build
 
-# Step 2: Set working directory inside container
 WORKDIR /app
 
-# Step 3: Copy Maven wrapper and pom.xml for dependency download
-COPY mvnw pom.xml ./
+# Copy Maven wrapper and config first
+COPY mvnw .
 COPY .mvn .mvn
 
-# Step 4: Download dependencies offline
+# 🔥 FIX: give execute permission to mvnw
+RUN chmod +x mvnw
+
+# Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Step 5: Copy the source code
-COPY src ./src
+# Copy source code
+COPY pom.xml .
+COPY src src
 
-# Step 6: Build the fat jar (skip tests for speed)
-RUN ./mvnw package -DskipTests
+# Build the application (skip tests to avoid test failures)
+RUN ./mvnw clean package -DskipTests
 
-# Step 7: Expose the default Spring Boot port
+# ---- Run stage ----
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Step 8: Run the jar
-CMD ["java", "-jar", "target/personal_finance_manager-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "app.jar"]
