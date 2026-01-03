@@ -44,6 +44,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     // Filter by type (INCOME / EXPENSE)
     List<Transaction> findByUserAndType(User user, String type);
 
-    // Check if category is used in any transaction
+
+
+
 
 }
